@@ -1,108 +1,105 @@
-// src/pages/ProductsPage.tsx
+// src/pages/LocationsPage.tsx
 import { useEffect, useState } from 'react';
 import {
-  getProducts,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-  toggleProductStatus,
-  type IProducto,
-} from '../api/products';
+  getUbicaciones,
+  createUbicacion,
+  updateUbicacion,
+  deleteUbicacion,
+  toggleUbicacionStatus,
+  type IUbicacion,
+} from '../api/locations';
 import AlmacenImg from '../assets/images/home/almacen.webp';
 
-const ProductsPage = () => {
-  const [products, setProducts] = useState<IProducto[]>([]);
+const LocationsPage = () => {
+  const [ubicaciones, setUbicaciones] = useState<IUbicacion[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [currentProduct, setCurrentProduct] = useState<IProducto | null>(null);
+  const [currentUbicacion, setCurrentUbicacion] = useState<IUbicacion | null>(null);
   const [showDeleteAlert, setShowDeleteAlert] = useState<boolean>(false);
-  const [productToDelete, setProductToDelete] = useState<number | null>(null);
+  const [ubicacionToDelete, setUbicacionToDelete] = useState<number | null>(null);
   
-  const [formData, setFormData] = useState<Omit<IProducto, 'id'>>({
+  const [formData, setFormData] = useState<Omit<IUbicacion, 'id'>>({
     codigo: '',
     nombre: '',
     descripcion: '',
-    categoria: 0,
-    unidad_medida: 'unidad',
-    precio_promedio: 0,
-    stock_minimo: 0,
-    stock_maximo: 0,
+    seccion: '',
+    pasillo: '',
+    estante: '',
+    nivel: '',
     activo: true
   });
 
   useEffect(() => {
-    fetchProducts();
+    fetchUbicaciones();
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchUbicaciones = async () => {
     try {
       setLoading(true);
-      const data = await getProducts();
-      setProducts(data);
+      const data = await getUbicaciones();
+      setUbicaciones(data);
       setError(null);
     } catch (err) {
-      setError('Error al cargar los productos');
+      setError('Error al cargar las ubicaciones');
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
     
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : type === 'number' ? Number(value) : value
+      [name]: type === 'checkbox' ? checked : value
     });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (currentProduct && currentProduct.id) {
-        await updateProduct(currentProduct.id, formData);
+      if (currentUbicacion && currentUbicacion.id) {
+        await updateUbicacion(currentUbicacion.id, formData);
       } else {
-        await createProduct(formData);
+        await createUbicacion(formData);
       }
-      fetchProducts();
+      fetchUbicaciones();
       closeModal();
     } catch (err) {
-      setError('Error al guardar el producto');
+      setError('Error al guardar la ubicación');
       console.error(err);
     }
   };
 
   const openCreateModal = () => {
-    setCurrentProduct(null);
+    setCurrentUbicacion(null);
     setFormData({
       codigo: '',
       nombre: '',
       descripcion: '',
-      categoria: 0,
-      unidad_medida: 'unidad',
-      precio_promedio: 0,
-      stock_minimo: 0,
-      stock_maximo: 0,
+      seccion: '',
+      pasillo: '',
+      estante: '',
+      nivel: '',
       activo: true
     });
     setIsModalOpen(true);
   };
 
-  const openEditModal = (product: IProducto) => {
-    setCurrentProduct(product);
+  const openEditModal = (ubicacion: IUbicacion) => {
+    setCurrentUbicacion(ubicacion);
     setFormData({
-      codigo: product.codigo,
-      nombre: product.nombre,
-      descripcion: product.descripcion,
-      categoria: product.categoria,
-      unidad_medida: product.unidad_medida,
-      precio_promedio: product.precio_promedio,
-      stock_minimo: product.stock_minimo,
-      stock_maximo: product.stock_maximo,
-      activo: product.activo ?? true
+      codigo: ubicacion.codigo,
+      nombre: ubicacion.nombre,
+      descripcion: ubicacion.descripcion,
+      seccion: ubicacion.seccion,
+      pasillo: ubicacion.pasillo,
+      estante: ubicacion.estante,
+      nivel: ubicacion.nivel,
+      activo: ubicacion.activo
     });
     setIsModalOpen(true);
   };
@@ -112,31 +109,31 @@ const ProductsPage = () => {
   };
 
   const confirmDelete = (id: number) => {
-    setProductToDelete(id);
+    setUbicacionToDelete(id);
     setShowDeleteAlert(true);
   };
 
   const handleDelete = async () => {
-    if (productToDelete) {
+    if (ubicacionToDelete) {
       try {
-        await deleteProduct(productToDelete);
-        fetchProducts();
+        await deleteUbicacion(ubicacionToDelete);
+        fetchUbicaciones();
       } catch (err) {
-        setError('Error al eliminar el producto');
+        setError('Error al eliminar la ubicación');
         console.error(err);
       } finally {
         setShowDeleteAlert(false);
-        setProductToDelete(null);
+        setUbicacionToDelete(null);
       }
     }
   };
 
   const handleToggleStatus = async (id: number, currentStatus: boolean) => {
     try {
-      await toggleProductStatus(id, currentStatus);
-      fetchProducts();
+      await toggleUbicacionStatus(id, currentStatus);
+      fetchUbicaciones();
     } catch (err) {
-      setError('Error al cambiar el estado del producto');
+      setError('Error al cambiar el estado de la ubicación');
       console.error(err);
     }
   };
@@ -160,13 +157,13 @@ const ProductsPage = () => {
           <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl p-6 sm:p-8">
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-3xl font-bold text-gray-800">
-                Administración de Productos
+                Administración de Ubicaciones
               </h1>
               <button
                 onClick={openCreateModal}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow-sm"
               >
-                Nuevo Producto
+                Nueva Ubicación
               </button>
             </div>
             
@@ -187,33 +184,30 @@ const ProductsPage = () => {
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pasillo</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {products.map((product) => (
-                      <tr key={product.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">{product.codigo}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{product.nombre}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">${product.precio_promedio}</td>
+                    {ubicaciones.map((ubicacion) => (
+                      <tr key={ubicacion.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">{ubicacion.codigo}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{ubicacion.nombre}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{ubicacion.seccion}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{ubicacion.pasillo}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            ${(product.stock_actual || 0) < (product.stock_minimo || 0) ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
-                            {product.stock_actual} / {product.stock_maximo}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            ${product.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                            {product.activo ? 'Activo' : 'Inactivo'}
+                          <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                              ${ubicacion.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                          >
+                            {ubicacion.activo ? 'Activo' : 'Inactivo'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                           <button
-                            onClick={() => openEditModal(product)}
+                            onClick={() => openEditModal(ubicacion)}
                             className="text-indigo-600 hover:text-indigo-900"
                             title="Editar"
                           >
@@ -222,11 +216,11 @@ const ProductsPage = () => {
                             </svg>
                           </button>
                           <button
-                            onClick={() => handleToggleStatus(product.id!, product.activo || false)}
-                            className={`${product.activo ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'}`}
-                            title={product.activo ? 'Desactivar' : 'Activar'}
+                            onClick={() => handleToggleStatus(ubicacion.id!, ubicacion.activo)}
+                            className={`${ubicacion.activo ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'}`}
+                            title={ubicacion.activo ? 'Desactivar' : 'Activar'}
                           >
-                            {product.activo ? (
+                            {ubicacion.activo ? (
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                               </svg>
@@ -238,7 +232,7 @@ const ProductsPage = () => {
                             )}
                           </button>
                           <button
-                            onClick={() => confirmDelete(product.id!)}
+                            onClick={() => confirmDelete(ubicacion.id!)}
                             className="text-red-600 hover:text-red-900"
                             title="Eliminar"
                           >
@@ -257,14 +251,14 @@ const ProductsPage = () => {
         </div>
       </div>
       
-      {/* Modal de Producto */}
+      {/* Modal de Ubicación */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={closeModal}></div>
           <div className="relative bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                {currentProduct ? 'Editar Producto' : 'Nuevo Producto'}
+                {currentUbicacion ? 'Editar Ubicación' : 'Nueva Ubicación'}
               </h2>
               
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -314,73 +308,58 @@ const ProductsPage = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="unidad_medida">
-                      Unidad de Medida *
-                    </label>
-                    <select
-                      id="unidad_medida"
-                      name="unidad_medida"
-                      value={formData.unidad_medida}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                      required
-                    >
-                      <option value="unidad">Unidad</option>
-                      <option value="kg">Kilogramo</option>
-                      <option value="g">Gramo</option>
-                      <option value="l">Litro</option>
-                      <option value="ml">Mililitro</option>
-                      <option value="m">Metro</option>
-                      <option value="cm">Centímetro</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="precio_promedio">
-                      Precio Promedio *
+                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="seccion">
+                      Sección
                     </label>
                     <input
-                      type="number"
-                      id="precio_promedio"
-                      name="precio_promedio"
-                      value={formData.precio_promedio}
+                      type="text"
+                      id="seccion"
+                      name="seccion"
+                      value={formData.seccion}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                      min="0"
-                      step="0.01"
-                      required
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="stock_minimo">
-                      Stock Mínimo *
+                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="pasillo">
+                      Pasillo
                     </label>
                     <input
-                      type="number"
-                      id="stock_minimo"
-                      name="stock_minimo"
-                      value={formData.stock_minimo}
+                      type="text"
+                      id="pasillo"
+                      name="pasillo"
+                      value={formData.pasillo}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                      min="0"
-                      required
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="stock_maximo">
-                      Stock Máximo *
+                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="estante">
+                      Estante
                     </label>
                     <input
-                      type="number"
-                      id="stock_maximo"
-                      name="stock_maximo"
-                      value={formData.stock_maximo}
+                      type="text"
+                      id="estante"
+                      name="estante"
+                      value={formData.estante}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                      min="0"
-                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="nivel">
+                      Nivel
+                    </label>
+                    <input
+                      type="text"
+                      id="nivel"
+                      name="nivel"
+                      value={formData.nivel}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
                   
@@ -394,7 +373,7 @@ const ProductsPage = () => {
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
                     <label htmlFor="activo" className="ml-2 block text-sm text-gray-700">
-                      Producto Activo
+                      Ubicación Activa
                     </label>
                   </div>
                 </div>
@@ -411,7 +390,7 @@ const ProductsPage = () => {
                     type="submit"
                     className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm"
                   >
-                    {currentProduct ? 'Actualizar' : 'Crear'}
+                    {currentUbicacion ? 'Actualizar' : 'Crear'}
                   </button>
                 </div>
               </form>
@@ -426,7 +405,7 @@ const ProductsPage = () => {
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteAlert(false)}></div>
           <div className="relative bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Confirmar Eliminación</h2>
-            <p className="mb-6">¿Estás seguro que deseas eliminar este producto? Esta acción no se puede deshacer.</p>
+            <p className="mb-6">¿Estás seguro que deseas eliminar esta ubicación? Esta acción no se puede deshacer.</p>
             
             <div className="flex justify-end space-x-3">
               <button
@@ -449,4 +428,4 @@ const ProductsPage = () => {
   );
 };
 
-export default ProductsPage;
+export default LocationsPage;
