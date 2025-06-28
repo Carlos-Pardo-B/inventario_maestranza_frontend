@@ -11,26 +11,34 @@ const Navbar = () => {
             <div className="text-white font-bold text-2xl px-8">
                 <p>Maestranzas Unidas S.A.</p>
             </div>
-            
+
             {/* Links centrales */}
             <div className="flex justify-center gap-10 text-white font-bold text-xl">
-                <Link to='/' className="hover:text-blue-400 transition-colors">Home</Link>
-                <Link to='/product_list' className="hover:text-blue-400 transition-colors">Productos</Link>
-                <Link to='/' className="hover:text-blue-400 transition-colors">Contacto</Link>
-                <Link to='/' className="hover:text-blue-400 transition-colors">Acerca</Link>
+                <Link to='/' className="hover:text-blue-400 transition-colors px-3 py-1 rounded hover:bg-white/10">
+                    Inicio
+                </Link>
+                <Link to='/' className="hover:text-blue-400 transition-colors px-3 py-1 rounded hover:bg-white/10">
+                    Servicios
+                </Link>
+                <Link to='/' className="hover:text-blue-400 transition-colors px-3 py-1 rounded hover:bg-white/10">
+                    Proyectos
+                </Link>
+                <Link to='/' className="hover:text-blue-400 transition-colors px-3 py-1 rounded hover:bg-white/10">
+                    Clientes
+                </Link>
+                <Link to='/' className="hover:text-blue-400 transition-colors px-3 py-1 rounded hover:bg-white/10">
+                    Contacto
+                </Link>
+                <Link to='/' className="hover:text-blue-400 transition-colors px-3 py-1 rounded hover:bg-white/10">
+                    Nosotros
+                </Link>
             </div>
-            
+
             {/* Botones derecha */}
             <div className="flex justify-end gap-4 px-10">
                 <Button
-                    text="Registrarse"
-                    onClick={() => navigate('/login')}
-                    color="blue"
-                    size="md"
-                />
-                <Button
                     text="Ingresar"
-                    onClick={() => console.log('Clicked')}
+                    onClick={() => navigate('/login')}
                     color="green"
                     size="md"
                 />

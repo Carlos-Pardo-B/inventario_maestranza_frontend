@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AlmacenImg from '../assets/images/home/almacen.webp';
 import authService from '../api/auth';
@@ -11,6 +11,14 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Deshabilitar scroll al montar el componente
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -18,7 +26,7 @@ const Login = () => {
 
     try {
       await authService.login(username, password);
-      navigate('/administrator'); // Redirige al dashboard después del login
+      navigate('/administrator');
     } catch (error: any) {
       console.error('Login error:', error);
       setError(error.response?.data?.detail || 'Error al iniciar sesión. Por favor, inténtalo de nuevo.');
@@ -28,16 +36,16 @@ const Login = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center">
+    <div className="fixed inset-0 flex items-center justify-center overflow-hidden">
       {/* Fondo con imagen */}
       <img 
         src={AlmacenImg} 
         alt="Almacén industrial" 
-        className="absolute inset-0 w-full h-full object-cover brightness-50"
+        className="fixed inset-0 w-full h-full object-cover brightness-50"
       />
       
       {/* Overlay para mejor contraste */}
-      <div className="absolute inset-0 bg-black/30"></div>
+      <div className="fixed inset-0 bg-black/30"></div>
       
       {/* Contenedor del formulario */}
       <div className="relative z-10 w-full max-w-md px-6 py-8 bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl mx-4">
