@@ -18,7 +18,7 @@ const Login = () => {
 
     try {
       await authService.login(username, password);
-      navigate('/product_list'); // Redirige al dashboard después del login
+      navigate('/administrator'); // Redirige al dashboard después del login
     } catch (error: any) {
       console.error('Login error:', error);
       setError(error.response?.data?.detail || 'Error al iniciar sesión. Por favor, inténtalo de nuevo.');
