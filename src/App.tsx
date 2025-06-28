@@ -14,6 +14,8 @@ import TagsPage from './pages/TagList';
 import KitsPage from './pages/KitsList';
 import KitComponentesPage from './pages/KitComponentsList';
 import ProveedoresPage from './pages/ProveedoresList';
+import UsuariosPage from './pages/UsersList';
+import AlertasPage from './pages/AlertList';
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
         <Route path='kit_list' element={<KitsPage/>} />
         <Route path='kit_component_list' element={<KitComponentesPage/>} />
         <Route path='proveedores_list' element={<ProveedoresPage/>} />
+        <Route path='users_list' element={<UsuariosPage/>} />
+        <Route path='alert_list' element={<AlertasPage/>} />
         <Route path='administrator' element={<AdministratorPage/>} />
         <Route index element={<Home />}/>
       </Route>
