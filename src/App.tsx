@@ -10,6 +10,10 @@ import ProductTagsPage from './pages/ProductTagList';
 import MovementsPage from './pages/MovementList';
 import LotsPage from './pages/LotsList';
 import AdministratorPage from './pages/AdministratorPage';
+import TagsPage from './pages/TagList';
+import KitsPage from './pages/KitsList';
+import KitComponentesPage from './pages/KitComponentsList';
+import ProveedoresPage from './pages/ProveedoresList';
 
 function App() {
   return (
@@ -23,6 +27,10 @@ function App() {
         <Route path='product_tag_list' element={<ProductTagsPage/>} />
         <Route path='movement_list' element={<MovementsPage/>} />
         <Route path='lot_list' element={<LotsPage/>} />
+        <Route path='tag_list' element={<TagsPage/>} />
+        <Route path='kit_list' element={<KitsPage/>} />
+        <Route path='kit_component_list' element={<KitComponentesPage/>} />
+        <Route path='proveedores_list' element={<ProveedoresPage/>} />
         <Route path='administrator' element={<AdministratorPage/>} />
         <Route index element={<Home />}/>
       </Route>
